@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<document type="freeswitch/xml">
+  <section name="configuration">
+    <configuration name="modules.conf" description="Modules">
+      <modules>
+        <load module="mod_console"/>
+        <load module="mod_logfile"/>
+        <load module="mod_commands"/>
+        <load module="mod_dptools"/>
+        <load module="mod_sofia"/>
+        <load module="mod_event_socket"/>
+        <load module="mod_tone_stream"/>
+        <load module="mod_callcenter"/>
+      </modules>
+    </configuration>
+
+    <configuration name="console.conf" description="Console Logger">
+      <mappings><map name="all" value="console,debug,info,notice,warning,err,crit,alert"/></mappings>
+      <settings><param name="colorize" value="true"/></settings>
+    </configuration>
+
+    <configuration name="event_socket.conf" description="Event Socket">
+      <settings>
+        <param name="listen-ip" value="127.0.0.1"/>
+        <param name="listen-port" value="8021"/>
+        <param name="password" value="ClueCon"/>
+      </settings>
+    </configuration>
+
+    <configuration name="switch.conf" description="Core">
+      <settings>
+        <param name="rtp-start-port" value="16384"/>
+        <param name="rtp-end-port" value="16484"/>
+      </settings>
+    </configuration>
+
+    <configuration name="sofia.conf" description="Sofia">
+      <profiles>
+        <profile name="internal">
+          <settings>
+            <param name="sip-ip" value="0.0.0.0"/>
+            <param name="rtp-ip" value="172.28.0.20"/>
+            <param name="sip-port" value="5060"/>
+            <param name="context" value="public"/>
+            <param name="auth-calls" value="false"/>
+            <param name="inbound-codec-prefs" value="PCMU,PCMA"/>
+            <param name="outbound-codec-prefs" value="PCMU,PCMA"/>
+          </settings>
+        </profile>
+      </profiles>
+    </configuration>
+
+    <configuration name="callcenter.conf" description="M1 Call Center">
+      <settings></settings>
+      <queues>
+        <queue name="support@default">
+          <param name="strategy" value="longest-idle-agent"/>
+          <param name="moh-sound" value="tone_stream://%(2000,4000,440,480)"/>
+          <param name="time-base-score" value="system"/>
+          <param name="max-wait-time" value="0"/>
+          <param name="max-wait-time-with-no-agent" value="30"/>
+          <param name="discard-abandoned-after" value="60"/>
+        </queue>
+      </queues>
+      <agents>
+        <agent name="1001" type="callback" contact="{ignore_early_media=true}sofia/internal/1001@172.28.0.10:5060" status="Available" max-no-answer="3" wrap-up-time="5" reject-delay-time="5" busy-delay-time="10"/>
+        <agent name="1002" type="callback" contact="{ignore_early_media=true}sofia/internal/1002@172.28.0.10:5060" status="Available" max-no-answer="3" wrap-up-time="5" reject-delay-time="5" busy-delay-time="10"/>
+      </agents>
+      <tiers>
+        <tier agent="1001" queue="support@default" level="1" position="1"/>
+        <tier agent="1002" queue="support@default" level="1" position="2"/>
+      </tiers>
+    </configuration>
+  </section>
+
+  <section name="dialplan" description="M1 Dialplan">
+    <context name="public">
+      <extension name="acd-support">
+        <condition field="destination_number" expression="^7000$">
+          <action application="answer"/>
+          <action application="set" data="hangup_after_bridge=true"/>
+          <action application="callcenter" data="support@default"/>
+        </condition>
+      </extension>
+    </context>
+  </section>
+
+  <section name="directory" description="Directory">
+    <domain name="default">
+      <params><param name="dial-string" value="{presence_id=${dialed_user}@${dialed_domain}}${sofia_contact(${dialed_user}@${dialed_domain})}"/></params>
+    </domain>
+  </section>
+</document>
