@@ -1,0 +1,32 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+
+# Runtime / logs
+logs/
+*.log
+run/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Node
+node_modules/
+dist/
+
+# IDE / OS
+.DS_Store
+.idea/
+.vscode/
+
+# Packet captures may contain sensitive signaling/media metadata
+captures/*.pcap
+captures/*.pcapng
