@@ -28,12 +28,12 @@ docker compose logs -f kamailio freeswitch
 
 ## Agent registration
 
-Configure two SIP endpoints against the Docker host IP / port `5060`:
+Configure two SIP endpoints on the Docker host against `127.0.0.1:5060`. The Compose ports are bound to host loopback to limit the unauthenticated lab. Remote endpoints require an explicit port-binding change and a trusted isolated network; do not expose this configuration publicly:
 
 | Agent | SIP user | Registrar/proxy |
 |---|---|---|
-| Agent 1 | `1001` | `<docker-host>:5060` |
-| Agent 2 | `1002` | `<docker-host>:5060` |
+| Agent 1 | `1001` | `127.0.0.1:5060` |
+| Agent 2 | `1002` | `127.0.0.1:5060` |
 
 M1 deliberately has **no SIP authentication**. Run it only on a trusted local development network. Authentication is added as a hardening milestone.
 
@@ -44,7 +44,7 @@ Confirm Kamailio logs show successful REGISTER processing.
 From a third SIP endpoint, send an INVITE to:
 
 ```text
-sip:7000@<docker-host>:5060
+sip:7000@127.0.0.1:5060
 ```
 
 Expected logical path:
@@ -113,7 +113,7 @@ show calls
 
 ## RTP caveat
 
-Docker NAT and desktop virtualization can affect SDP/RTP addressing. The initial configuration advertises the lab container address for the FreeSWITCH media interface. If the SIP endpoints run on the host rather than inside the Docker network, the first test may expose an RTP reachability issue. That is intentional engineering work for M1: capture the SDP, identify the unreachable address, and then introduce an explicit advertised media address/NAT strategy instead of masking the problem.
+Docker NAT and desktop virtualization can affect SDP/RTP addressing. The initial configuration advertises the lab container address for the FreeSWITCH media interface. If the SIP endpoints run on the host rather than inside the Docker network, the first test may expose an RTP reachability issue. Loopback port binding prevents remote hosts from reaching the lab but does not correct the advertised container media address. That is intentional engineering work for M1: capture the SDP, identify the unreachable address, and then introduce an explicit advertised media address/NAT strategy instead of masking the problem.
 
 ## Definition of done
 

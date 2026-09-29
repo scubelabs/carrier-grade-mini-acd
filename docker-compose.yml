@@ -4,8 +4,8 @@ services:
     container_name: scubelabs-kamailio
     restart: unless-stopped
     ports:
-      - "5060:5060/udp"
-      - "5060:5060/tcp"
+      - "127.0.0.1:5060:5060/udp"
+      - "127.0.0.1:5060:5060/tcp"
     networks:
       voice:
         ipv4_address: 172.28.0.10
@@ -20,7 +20,7 @@ services:
       - "5060/udp"
       - "8021/tcp"
     ports:
-      - "16384-16484:16384-16484/udp"
+      - "127.0.0.1:16384-16484:16384-16484/udp"
     networks:
       voice:
         ipv4_address: 172.28.0.20

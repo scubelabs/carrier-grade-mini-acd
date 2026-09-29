@@ -33,7 +33,7 @@ Caller → Kamailio → FreeSWITCH → Queue → SIP Agent
 
 Goals:
 
-- Run the voice stack locally with Docker Compose.
+- Run the voice stack locally with Docker Compose. Ports bind to host loopback by default because SIP registration has no authentication in M1.
 - Route SIP signaling through Kamailio.
 - Send ACD traffic from Kamailio to FreeSWITCH.
 - Register/test two SIP agent endpoints.
@@ -96,7 +96,7 @@ The local lab starts on an isolated development network. Later milestones will e
 
 🚧 **Under active development — M1 bootstrap**
 
-The next commit establishes the local Docker network, Kamailio SIP edge, FreeSWITCH service, and baseline configuration required for the first end-to-end call.
+The Docker network, SIP edge and media configuration are committed. End-to-end registration, agent delivery and bidirectional RTP remain unverified; use the runbook acceptance checklist before marking M1 complete.
 
 ## License
 
