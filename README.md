@@ -1,6 +1,18 @@
 # Carrier-Grade Mini ACD
 
+> **SCubeLabs ecosystem** · [Platform](https://github.com/scubelabs/scubelabs) · [Architecture](https://github.com/scubelabs/ccaas-reference-architecture) · [Domain Model](https://github.com/scubelabs/ccaas-domain-model) · [Mini ACD](https://github.com/scubelabs/carrier-grade-mini-acd) · [SIP Lab](https://github.com/scubelabs/sip-troubleshooting-lab) · [VoxOne](https://github.com/scubelabs/voxone-showcase)
+
+> **Role:** executable voice/ACD validation path · **Maturity:** M1 bootstrap · **Evidence:** implementation present; end-to-end registration, delivery and RTP verification pending
+
 > A production-oriented lab for building an Automatic Call Distributor with Kamailio, FreeSWITCH, and modern distributed-systems patterns.
+
+## Role in the SCubeLabs platform
+
+This repository is the **executable vertical-slice laboratory** for the real-time voice spine. It turns architecture and domain contracts into observable SIP, media, queueing and agent-delivery behavior. It does not replace the authoritative platform domains; it is where integration assumptions are made runnable and testable.
+
+**Upstream:** carrier/SIP endpoints, voice-edge policy and canonical platform contracts.  
+**Owns in this lab:** local signaling path, media/call-control integration, queue experiment, test topology and evidence.  
+**Downstream:** agent endpoint, observability, failure testing and later multi-carrier scenarios.
 
 ## Why this project exists
 
@@ -86,17 +98,24 @@ This lab is designed to make questions visible that toy ACD implementations ofte
 - How do we trace one call across SIP, media, routing, and application events?
 - Which state must survive a process, node, or region failure?
 
+## Evidence and maturity
+
+| Dimension | Current state |
+|---|---|
+| Architecture | Defined for the target lab path |
+| Contracts | Evolving with the platform model |
+| Implementation | M1 bootstrap committed |
+| Integration evidence | Pending complete registration → queue → agent proof |
+| Media evidence | Bidirectional RTP verification pending |
+| Failure evidence | Planned for M6 |
+| Load/HA evidence | Planned for M7+ |
+| Production evidence | Not claimed |
+
 ## Security scope
 
 The local lab starts on an isolated development network. Later milestones will explicitly address SIP authentication, topology hiding, TLS/SRTP, network policy, secret management, rate limiting, abuse controls, and production hardening.
 
 **Do not expose the development configuration directly to the public Internet.**
-
-## Status
-
-🚧 **Under active development — M1 bootstrap**
-
-The Docker network, SIP edge and media configuration are committed. End-to-end registration, agent delivery and bidirectional RTP remain unverified; use the runbook acceptance checklist before marking M1 complete.
 
 ## License
 
