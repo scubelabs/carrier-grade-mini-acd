@@ -54,6 +54,28 @@ Goals:
 - Verify bidirectional RTP.
 - Document failure behavior rather than hiding it.
 
+## Resume M1
+
+Start with the [first-call runbook](docs/runbook-m1.md): E0 workstation/package
+access → E1 services → E2 registrations, **9196 echo**, then **7000 queue**.
+Agents are **1001/1002** and the caller is **2000**. Agent registration and ACD
+availability are separate state.
+
+The FreeSWITCH package build requires a locally supplied repository credential
+via a BuildKit secret. Copy `.env.example` to `.env` to set the host address
+advertised in SIP/RTP; published ports remain on loopback. Windows/WSL endpoint
+media reachability must be verified from both SDP bodies and a packet capture.
+
+```bash
+python3 scripts/validate-config.py
+./scripts/preflight.sh
+# Follow the runbook for the local credential and image build.
+./scripts/diagnostics.sh
+```
+
+Offline checks and CI validate configuration consistency and proxy parsing;
+end-to-end queue delivery and two-way audio are still pending real evidence.
+
 ## Roadmap
 
 | Milestone | Capability |
