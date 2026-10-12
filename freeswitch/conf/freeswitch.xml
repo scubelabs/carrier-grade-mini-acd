@@ -42,6 +42,8 @@
             <param name="sip-ip" value="172.28.0.20"/>
             <param name="rtp-ip" value="172.28.0.20"/>
             <param name="ext-rtp-ip" value="__LAB_PUBLIC_IP__"/>
+            <param name="ext-sip-ip" value="172.28.0.20"/>
+            <param name="local-network-acl" value="loopback.auto"/>
             <param name="sip-port" value="5060"/>
             <param name="context" value="public"/>
             <param name="auth-calls" value="false"/>

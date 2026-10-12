@@ -29,4 +29,5 @@ RUN chmod +x /usr/local/bin/lab-entrypoint
 EXPOSE 5060/udp
 EXPOSE 16384-16484/udp
 ENTRYPOINT ["/usr/local/bin/lab-entrypoint"]
-CMD ["freeswitch", "-nonat", "-nf", "-conf", "/etc/freeswitch"]
+RUN mkdir -p /var/log/freeswitch /var/lib/freeswitch/db
+CMD ["freeswitch", "-nonat", "-nf", "-conf", "/etc/freeswitch", "-log", "/var/log/freeswitch", "-db", "/var/lib/freeswitch/db"]

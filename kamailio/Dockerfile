@@ -1,4 +1,4 @@
-FROM kamailio/kamailio:5.8.5-bookworm
+FROM ghcr.io/kamailio/kamailio:5.8.5-bookworm
 
 COPY kamailio.cfg /etc/kamailio/kamailio.cfg.template
 COPY entrypoint.sh /usr/local/bin/lab-entrypoint
