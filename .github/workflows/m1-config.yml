@@ -1,0 +1,30 @@
+name: M1 configuration checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Cross-component and template checks
+        run: |
+          python3 scripts/validate-config.py
+          python3 -m unittest discover -s tests -v
+          bash -n scripts/preflight.sh scripts/diagnostics.sh
+          sh -n kamailio/entrypoint.sh freeswitch/entrypoint.sh
+          git diff --check
+      - name: Compose structure (placeholder credential; no FreeSWITCH build)
+        run: |
+          mkdir -p .secrets
+          printf 'machine freeswitch.signalwire.com login signalwire password PLACEHOLDER\n' > .secrets/fs-auth.conf
+          docker compose config --quiet
+      - name: Parse with the exact Kamailio image
+        run: |
+          docker build -t mini-acd-kamailio-check ./kamailio
+          docker run --rm mini-acd-kamailio-check kamailio -c -f /etc/kamailio/kamailio.cfg

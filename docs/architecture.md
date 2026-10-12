@@ -40,6 +40,24 @@ Responsibilities in M1:
 
 Two generic SIP user agents represent agents. This keeps M1 independent of a browser/WebRTC implementation. WebRTC is introduced only after signaling, routing, queueing and RTP are proven.
 
+## M1 network boundaries
+
+| Interface | Address | Purpose |
+|---|---|---|
+| Published SIP | Host loopback:5060 UDP/TCP | Local endpoints; begin tests with UDP |
+| Edge external socket | 172.28.0.10:5060 | Advertises `LAB_PUBLIC_IP:5060` |
+| Edge private socket | 172.28.0.10:5062 UDP | FreeSWITCH routing and agent legs; not published |
+| FreeSWITCH SIP | 172.28.0.20:5060 | Docker-only call control |
+| FreeSWITCH RTP | 16384–16484 UDP | Host loopback published, external SDP address configurable |
+| FreeSWITCH event socket | Container loopback:8021 | Diagnostics via `docker compose exec` |
+
+Kamailio stores observed registration destinations and uses username-only lookup
+for this single-realm lab. Its two sockets allow double Record-Route across the
+host/container boundary. This is not multi-tenant registration or SIP auth.
+FreeSWITCH retains its Docker-private SIP Contact; the proxy routes in-dialog
+requests. Its external RTP address is rendered at startup independently of its
+bind address. Endpoint SDP/return media reachability still requires measurement.
+
 ## State ownership evolution
 
 M1 is intentionally not the final state model.

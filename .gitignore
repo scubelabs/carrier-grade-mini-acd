@@ -30,3 +30,7 @@ dist/
 # Packet captures may contain sensitive signaling/media metadata
 captures/*.pcap
 captures/*.pcapng
+
+# Local build credential and validation evidence
+.secrets/
+evidence/

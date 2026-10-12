@@ -3,6 +3,8 @@ services:
     build: ./kamailio
     container_name: scubelabs-kamailio
     restart: unless-stopped
+    environment:
+      LAB_PUBLIC_IP: ${LAB_PUBLIC_IP:-127.0.0.1}
     ports:
       - "127.0.0.1:5060:5060/udp"
       - "127.0.0.1:5060:5060/tcp"
@@ -10,20 +12,33 @@ services:
       voice:
         ipv4_address: 172.28.0.10
     depends_on:
-      - freeswitch
+      freeswitch:
+        condition: service_healthy
 
   freeswitch:
-    build: ./freeswitch
+    build:
+      context: ./freeswitch
+      secrets:
+        - fs_auth
     container_name: scubelabs-freeswitch
     restart: unless-stopped
-    expose:
-      - "5060/udp"
-      - "8021/tcp"
+    environment:
+      LAB_PUBLIC_IP: ${LAB_PUBLIC_IP:-127.0.0.1}
     ports:
       - "127.0.0.1:16384-16484:16384-16484/udp"
+    healthcheck:
+      test: ["CMD-SHELL", "fs_cli -x 'sofia status' | grep -q 'internal.*RUNNING'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
     networks:
       voice:
         ipv4_address: 172.28.0.20
+
+secrets:
+  fs_auth:
+    file: ./.secrets/fs-auth.conf
 
 networks:
   voice:
